@@ -186,7 +186,16 @@ func (e *EvalBinaryNode) EvalString(scope *Scope, executionState ExecutionState)
 
 // EvalBool executes the expression based on eval bool
 func (e *EvalBinaryNode) EvalBool(scope *Scope, executionState ExecutionState) (bool, error) {
-	result, err := e.eval(scope, executionState)
+	// TODO: Think through this more
+	// Note: using e.eval caused issues this might need to be fixed still, not sure how sane this is
+	//result, err := e.eval(scope, executionState)
+	var result resultContainer
+	var err *ErrSide
+	if e.leftEvaluator.IsDynamic() || e.rightEvaluator.IsDynamic() {
+		result, err = e.evaluateDynamicNode(scope, executionState, e.leftEvaluator, e.rightEvaluator)
+	} else {
+		result, err = e.eval(scope, executionState)
+	}
 	if err != nil {
 		return false, err.error
 	}
@@ -284,12 +293,13 @@ func (e *EvalBinaryNode) evaluateDynamicNode(scope *Scope, executionState Execut
 	// For example: "count() == 1"
 	//  1. we evaluate the left side and counter is 1 (upper ^ in this function)
 	//  2. we evaluate the second time in "EvalBool"
+	typeExecutionState := CreateExecutionState()
 
-	if leftType, err = left.Type(scope, executionState); err != nil {
+	if leftType, err = left.Type(scope, typeExecutionState); err != nil {
 		return emptyResultContainer, &ErrSide{error: err, IsLeft: true}
 	}
 
-	if rightType, err = right.Type(scope, executionState); err != nil {
+	if rightType, err = right.Type(scope, typeExecutionState); err != nil {
 		return emptyResultContainer, &ErrSide{error: err, IsRight: true}
 	}
 

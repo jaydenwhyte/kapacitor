@@ -506,6 +506,13 @@ func (h *matchHandler) Handle(event alert.Event) {
 	}
 }
 
+var matchMethodSignature = map[stateful.Domain]ast.ValueType{}
+
+func init() {
+	d := stateful.Domain{}
+	matchMethodSignature[d] = ast.TBool
+}
+
 func (h *matchHandler) match(event alert.Event) (bool, error) {
 	// Populate scope
 	h.scope.Reset()
@@ -513,11 +520,14 @@ func (h *matchHandler) match(event alert.Event) (bool, error) {
 	h.logger.Printf("D! match %+v", h)
 
 	if h.usesChanged {
-		h.scope.SetDynamicMethod(changedFunc, func(self interface{}, args ...interface{}) (interface{}, error) {
-			if len(args) != 0 {
-				return nil, fmt.Errorf("%s takes no arguments", changedFunc)
-			}
-			return event.State.Level != event.PreviousState().Level, nil
+		h.scope.SetDynamicMethod(changedFunc, &stateful.DynamicMethod{
+			F: func(self interface{}, args ...interface{}) (interface{}, error) {
+				if len(args) != 0 {
+					return nil, fmt.Errorf("%s takes no arguments", changedFunc)
+				}
+				return event.State.Level != event.PreviousState().Level, nil
+			},
+			Signature: matchMethodSignature,
 		})
 	}
 

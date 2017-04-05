@@ -21,8 +21,6 @@ const (
 
 var ErrNotFloat = errors.New("value is not a float")
 
-var funcSignatures = map[string]map[Domain]ast.ValueType{}
-
 type Domain [maxArgs]ast.ValueType
 
 // A callable function from within the expression

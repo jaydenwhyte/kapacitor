@@ -225,6 +225,7 @@ func eval(n NodeEvaluator, scope *Scope, executionState ExecutionState) (interfa
 		return n.EvalDuration(scope, executionState)
 	case ast.TMissing:
 		v, err := n.EvalMissing(scope, executionState)
+		// TODO: Fix bad error name
 		if err != nil && !strings.Contains(err.Error(), "Returning missing value") {
 			return v, err
 		}
@@ -236,11 +237,16 @@ func eval(n NodeEvaluator, scope *Scope, executionState ExecutionState) (interfa
 }
 
 type dynamicMethodFunc struct {
-	dm DynamicMethod
+	dm *DynamicMethod
 }
 
 func (dmf dynamicMethodFunc) Call(args ...interface{}) (interface{}, error) {
-	return dmf.dm(nil, args...)
+	return dmf.dm.F(nil, args...)
 }
 func (dmf dynamicMethodFunc) Reset() {
+}
+
+// TODO: figure out real signature
+func (dmf dynamicMethodFunc) Signature() map[Domain]ast.ValueType {
+	return dmf.dm.Signature
 }

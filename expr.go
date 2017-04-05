@@ -18,6 +18,7 @@ func EvalPredicate(se stateful.Expression, scopePool stateful.ScopePool, now tim
 		return false, err
 	}
 
+	//return se.EvalBool(vars)
 	b, err := se.EvalBool(vars)
 	if err != nil {
 		return false, err
@@ -55,6 +56,7 @@ func fillScope(vars *stateful.Scope, referenceVariables []string, now time.Time,
 				vars.Set(refVariableName, missingValue)
 				//return fmt.Errorf("no field or tag exists for %s", refVariableName)
 			}
+
 		}
 	}
 
