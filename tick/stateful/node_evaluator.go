@@ -22,6 +22,7 @@ func (e ErrTypeGuardFailed) Error() string {
 
 type ReadOnlyScope interface {
 	Get(name string) (interface{}, error)
+	DynamicMethod(name string) *DynamicMethod
 }
 
 // NodeEvaluator provides a generic way for trying to fetch

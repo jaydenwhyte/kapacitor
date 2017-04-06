@@ -35,7 +35,11 @@ func NewEvalFunctionNode(funcNode *ast.FunctionNode) (*EvalFunctionNode, error) 
 func (n *EvalFunctionNode) Type(scope ReadOnlyScope, executionState ExecutionState) (ast.ValueType, error) {
 	f := executionState.Funcs[n.funcName]
 	if f == nil {
-		return ast.InvalidType, fmt.Errorf("undefined function: %q", n.funcName)
+		dm := scope.DynamicMethod(n.funcName)
+		if dm == nil {
+			return ast.InvalidType, fmt.Errorf("undefined function: %q", n.funcName)
+		}
+		f = dynamicMethodFunc{dm}
 	}
 	signature := f.Signature()
 

@@ -8223,6 +8223,7 @@ stream
 		Options: map[string]interface{}{
 			"address": ts.Addr,
 		},
+		//Match: `"host" == 'serverA' AND changed()`,
 		Match: `"host" == 'serverA' AND level() == CRITICAL`,
 	}); err != nil {
 		t.Fatal(err)

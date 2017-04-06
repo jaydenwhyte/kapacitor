@@ -197,6 +197,10 @@ func (e *EvalBinaryNode) EvalBool(scope *Scope, executionState ExecutionState) (
 		result, err = e.eval(scope, executionState)
 	}
 	if err != nil {
+		fmt.Println(scope)
+		fmt.Println("here")
+		fmt.Println("here")
+		fmt.Println(err)
 		return false, err.error
 	}
 
