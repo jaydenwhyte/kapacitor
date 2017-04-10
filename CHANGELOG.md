@@ -82,6 +82,7 @@ kapacitor define-handler system aggregate_by_1m.yaml
     See [#1233](https://github.com/influxdata/kapacitor/pull/1233) for more information.
 - [#1068](https://github.com/influxdata/kapacitor/issues/1068): Fix dot view syntax to use xlabels and not create invalid quotes.
 - [#1295](https://github.com/influxdata/kapacitor/issues/1295): Fix curruption of recordings list after deleting all recordings.
+- [#1261](https://github.com/influxdata/kapacitor/issues/1261): Fix panic when the process cannot stat the data dir.
 
 ## v1.2.0 [2017-01-23]
 
